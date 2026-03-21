@@ -4,13 +4,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PAYDUNYA_MASTER_KEY  = process.env.PAYDUNYA_MASTER_KEY;
-const PAYDUNYA_PRIVATE_KEY = process.env.PAYDUNYA_PRIVATE_KEY;
-const PAYDUNYA_TOKEN       = process.env.PAYDUNYA_TOKEN;
-const SERVER_URL           = process.env.SERVER_URL;
-const SHOPIFY_STORE        = process.env.SHOPIFY_STORE;
-const SHOPIFY_CLIENT_ID    = process.env.SHOPIFY_CLIENT_ID;
-const SHOPIFY_SECRET       = process.env.SHOPIFY_SECRET;
+const PAYDUNYA_MASTER_KEY  = "zSI0Bxkh-IJEk-d0Ik-ERUf-fJYa52ZoIelK";
+const PAYDUNYA_PRIVATE_KEY = "test_private_qpNlrED1SSnIKNVcUYtKylt9V62";
+const PAYDUNYA_TOKEN       = "LWfRGZaRkAFrZ9PvQKF1";
+const SERVER_URL           = "https://paydunya-shopifyv1-production.up.railway.app";
+const SHOPIFY_STORE        = "bc-shop-9080.myshopify.com";
+const SHOPIFY_CLIENT_ID    = "5d1ee38278cf3341b0f13bd51044c099";
+const SHOPIFY_SECRET       = "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";
 
 const pdHeaders = {
   "Content-Type":         "application/json",
