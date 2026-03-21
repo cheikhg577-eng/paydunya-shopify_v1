@@ -96,4 +96,33 @@ app.post("/paydunya-webhook", async (req, res) => {
   const { data } = req.body;
   if (!data || data.status !== "completed") return res.status(200).send("ok");
   const order_id = data.custom_data?.shopify_order_id;
-  if (!order_id) return res.stat
+  if (!order_id) return res.status(400).json({ success: false, error: "order_id manquant" });
+  try {
+    const token = await getShopifyToken();
+    await axios.post(
+      `https://${SHOPIFY_STORE}/admin/api/2023-10/orders/${order_id}/transactions.json`,
+      {
+        transaction: {
+          kind:     "capture",
+          status:   "success",
+          amount:   data.total_amount,
+          currency: data.currency
+        }
+      },
+      {
+        headers: {
+          "Content-Type":         "application/json",
+          "X-Shopify-Access-Token": token
+        }
+      }
+    );
+    console.log(`Commande ${order_id} marquée comme payée sur Shopify`);
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("Erreur webhook Paydunya:", err.response?.data || err.message);
+    res.status(500).json({ success: false, error: "Erreur traitement webhook" });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
