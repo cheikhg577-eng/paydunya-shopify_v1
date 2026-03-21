@@ -36,9 +36,7 @@ async function getShopifyToken() {
   tokenExpiry  = Date.now() + 23 * 60 * 60 * 1000;
   console.log("Token Shopify renouvelé");
   return shopifyToken;
-}
-
-app.post("/pay/wave", async (req, res) => {
+  app.post("/pay/wave", async (req, res) => {
   const { phone, name, email, amount, order_id } = req.body;
   try {
     const response = await axios.post(
@@ -96,4 +94,38 @@ app.post("/paydunya-webhook", async (req, res) => {
   const { data } = req.body;
   if (!data || data.status !== "completed") return res.status(200).send("ok");
   const order_id = data.custom_data?.shopify_order_id;
-  if (!order_id) return res.stat
+  if (!order_id) return res.status(200).send("ok");
+  try {
+    const verify = await axios.get(
+      `https://app.paydunya.com/api/v1/checkout-invoice/confirm/${data.token}`,
+      { headers: pdHeaders }
+    );
+    if (verify.data.status !== "completed") return res.status(200).send("ok");
+    const token = await getShopifyToken();
+    await axios.post(
+      `https://${SHOPIFY_STORE}/admin/api/2026-01/orders/${order_id}/transactions.json`,
+      {
+        transaction: {
+          kind:    "capture",
+          status:  "success",
+          amount:  data.invoice.total_amount,
+          gateway: "PayDunya"
+        }
+      },
+      {
+        headers: {
+          "X-Shopify-Access-Token": token,
+          "Content-Type":           "application/json"
+        }
+      }
+    );
+    console.log(`Commande ${order_id} marquée comme payée`);
+    res.status(200).send("ok");
+  } catch (err) {
+    console.error("Erreur webhook:", err.response?.data || err.message);
+    res.status(500).send("erreur");
+  }
+});
+
+app.listen(3000, () => console.log("Serveur démarré sur le port 3000"));
+}
