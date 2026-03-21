@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 const PAYDUNYA_MASTER_KEY  = **************************;
 const PAYDUNYA_PRIVATE_KEY = **************************;
 const PAYDUNYA_TOKEN       = **************************;
-const SERVER_URL           = "https://votre-app.railway.app"; // à remplacer après déploiement
+const SERVER_URL = "https://paydunya-shopifyv1-production.up.railway.app";
 
 // ====== SHOPIFY 2026 — À REMPLACER ======
 const SHOPIFY_STORE        = "bc-shop-9080.myshopify.com";
