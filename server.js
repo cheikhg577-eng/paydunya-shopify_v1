@@ -18,8 +18,6 @@ const SERVER_URL           = "https://paydunya-shopifyv1-production.up.railway.a
 const SHOPIFY_STORE        = "bc-shop-9080.myshopify.com";
 const SHOPIFY_CLIENT_ID    = "5d1ee38278cf3341b0f13bd51044c099";
 const SHOPIFY_SECRET       = "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";
-
-
 const pdHeaders = {
   "Content-Type":         "application/json",
   "PAYDUNYA-MASTER-KEY":  PAYDUNYA_MASTER_KEY,
@@ -95,16 +93,14 @@ app.post("/pay/orange-money", async (req, res) => {
   try {
     const invoice_token = await creerFacture(amount, order_id);
     const r = await axios.post(
-  "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
-  {
-    "fullname":      name,
-    "email":         email,
-    "phone":         phone,
-    "payment_token": invoice_token,
-    "amount":        parseInt(amount)
-  },
-  { headers: pdHeaders }
-);
+      "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
+      {
+        "fullname":      name,
+        "email":         email,
+        "phone":         phone,
+        "payment_token": invoice_token,
+        "amount":        parseInt(amount)
+      },
       { headers: pdHeaders }
     );
     console.log("OM response:", JSON.stringify(r.data));
