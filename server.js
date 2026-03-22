@@ -90,21 +90,17 @@ app.post("/pay/wave", async (req, res) => {
 });
 
 app.post("/pay/orange-money", async (req, res) => {
-  const { phone, name, email, amount, order_id } = req.body;
-  console.log("OM body:", JSON.stringify(req.body));
-  try {
-    const invoice_token = await creerFacture(amount, order_id);
-    const r = await axios.post(
-      "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
-      {
-        orange_money_senegal_fullName:      name,
-        orange_money_senegal_email:         email,
-        orange_money_senegal_phone:         phone,
-        orange_money_senegal_payment_token: invoice_token,
-        orange_money_senegal_amount:        parseInt(amount)
-      },
-      { headers: pdHeaders }
-    );
+  const r = await axios.post(
+  "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
+  {
+    customer_name:    name,
+    customer_phone:   phone,
+    customer_email:   email,
+    payment_token:    invoice_token,
+    amount:           parseInt(amount)
+  },
+  { headers: pdHeaders }
+);
     console.log("OM response:", JSON.stringify(r.data));
     const url = r.data.url || r.data.link || r.data.payment_url;
     if (!url) return res.status(500).json({ success: false, error: "URL non trouvée", data: r.data });
