@@ -51,8 +51,7 @@ app.get("/", (req, res) => {
 
 app.post("/pay/wave", async (req, res) => {
   const { phone, name, email, amount, order_id } = req.body;
-  console.log("Données reçues Wave:", req.body);
-console.log("Réponse PayDunya Wave:", response.data);
+  console.log("Données reçues Wave:", JSON.stringify(req.body));
   try {
     const response = await axios.post(
       "https://app.paydunya.com/api/v1/softpay/wave-senegal",
@@ -65,6 +64,16 @@ console.log("Réponse PayDunya Wave:", response.data);
       },
       { headers: pdHeaders }
     );
+    console.log("Réponse PayDunya Wave:", JSON.stringify(response.data));
+    const url = response.data.url || response.data.link || response.data.payment_url;
+    if (!url) return res.status(500).json({ success: false, error: "URL non trouvée", data: response.data });
+    const encoded = Buffer.from(url).toString("base64");
+    res.json({ success: true, lien: `${SERVER_URL}/wave/${encoded}` });
+  } catch (err) {
+    console.error("Erreur Wave:", err.response?.data || err.message);
+    res.status(500).json({ success: false, error: "Erreur paiement Wave" });
+  }
+});
     const encoded = Buffer.from(response.data.url).toString("base64");
     res.json({ success: true, lien: `${SERVER_URL}/wave/${encoded}` });
   } catch (err) {
