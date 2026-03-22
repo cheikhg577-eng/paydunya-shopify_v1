@@ -106,7 +106,7 @@ app.post("/pay/orange-money", async (req, res) => {
     if (!url) return res.status(500).json({ success: false, error: "URL non trouvée", data: r.data });
     const encoded = Buffer.from(url).toString("base64");
     res.json({ success: true, lien: SERVER_URL + "/orange-money/" + encoded });
-  } catch (err) {
+   catch (err) {
     console.error("Erreur OM:", err.response ? JSON.stringify(err.response.data) : err.message);
     res.status(500).json({ success: false, error: "Erreur paiement Orange Money" });
   }
