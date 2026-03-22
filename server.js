@@ -93,13 +93,12 @@ app.post("/pay/orange-money", async (req, res) => {
   try {
     const invoice_token = await creerFacture(amount, order_id);
     const r = await axios.post(
-      "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
+      "https://app.paydunya.com/api/v1/softpay/new-orange-money-senegal",
       {
-        "fullname":      name,
-        "email":         email,
-        "phone":         phone,
-        "payment_token": invoice_token,
-        "amount":        parseInt(amount)
+        customer_name:   name,
+        customer_email:  email,
+        phone_number:    phone,
+        invoice_token:   invoice_token
       },
       { headers: pdHeaders }
     );
@@ -113,7 +112,6 @@ app.post("/pay/orange-money", async (req, res) => {
     res.status(500).json({ success: false, error: "Erreur paiement Orange Money" });
   }
 });
-
 app.get("/wave/:encoded", (req, res) => {
   res.redirect(Buffer.from(req.params.encoded, "base64").toString("utf-8"));
 });
