@@ -11,7 +11,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const PAYDUNYA_MASTER_KEY  = "test_public_3vMsUcwXAaBp4hYyiLd62z7QZq1";
+const PAYDUNYA_MASTER_KEY  = "zSI0Bxkh-IJEk-d0Ik-ERUf-fJYa52ZoIelK";
 const PAYDUNYA_PRIVATE_KEY = "test_private_qpNlrED1SSnIKNVcUYtKylt9V62";
 const PAYDUNYA_TOKEN       = "LWfRGZaRkAFrZ9PvQKF1";
 const SERVER_URL           = "https://paydunya-shopifyv1-production.up.railway.app";
