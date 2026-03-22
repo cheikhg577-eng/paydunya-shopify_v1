@@ -12,8 +12,8 @@ app.use((req, res, next) => {
 });
 
 const PAYDUNYA_MASTER_KEY  = "zSI0Bxkh-IJEk-d0Ik-ERUf-fJYa52ZoIelK";
-const PAYDUNYA_PRIVATE_KEY = "test_private_qpNlrED1SSnIKNVcUYtKylt9V62";
-const PAYDUNYA_TOKEN       = "LWfRGZaRkAFrZ9PvQKF1";
+const PAYDUNYA_PRIVATE_KEY = "live_private_lkHkajCBRtLSh74jz9pWNlJIk9e";
+const PAYDUNYA_TOKEN       = "DJO07inVXHdP0qpwR5KZ";
 const SERVER_URL           = "https://paydunya-shopifyv1-production.up.railway.app";
 const SHOPIFY_STORE        = "bc-shop-9080.myshopify.com";
 const SHOPIFY_CLIENT_ID    = "5d1ee38278cf3341b0f13bd51044c099";
