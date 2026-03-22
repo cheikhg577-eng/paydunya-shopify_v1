@@ -47,9 +47,34 @@ app.post("/pay/wave", async (req, res) => {
   const { phone, name, email, amount, order_id } = req.body;
   console.log("Wave body:", JSON.stringify(req.body));
   try {
+    // Étape 1 : Créer la facture
+    const facture = await axios.post(
+      "https://app.paydunya.com/api/v1/checkout-invoice/create",
+      {
+        invoice: { total_amount: amount, description: "Commande Shopify #" + order_id },
+        store: { name: "Ma Boutique Shopify" },
+        custom_data: { shopify_order_id: order_id },
+        actions: {
+          cancel_url: "https://" + SHOPIFY_STORE,
+          return_url: "https://" + SHOPIFY_STORE,
+          callback_url: SERVER_URL + "/paydunya-webhook"
+        }
+      },
+      { headers: pdHeaders }
+    );
+    console.log("Facture créée:", JSON.stringify(facture.data));
+    const invoice_token = facture.data.token;
+
+    // Étape 2 : Appeler SoftPay Wave avec le token
     const r = await axios.post(
       "https://app.paydunya.com/api/v1/softpay/wave-senegal",
-      { wave_senegal_fullName: name, wave_senegal_email: email, wave_senegal_phone: phone, wave_senegal_payment_token: order_id, wave_senegal_amount: amount },
+      {
+        wave_senegal_fullName:      name,
+        wave_senegal_email:         email,
+        wave_senegal_phone:         phone,
+        wave_senegal_payment_token: invoice_token,
+        wave_senegal_amount:        amount
+      },
       { headers: pdHeaders }
     );
     console.log("Wave response:", JSON.stringify(r.data));
@@ -57,7 +82,6 @@ app.post("/pay/wave", async (req, res) => {
     if (!url) return res.status(500).json({ success: false, error: "URL non trouvée", data: r.data });
     const encoded = Buffer.from(url).toString("base64");
     res.json({ success: true, lien: SERVER_URL + "/wave/" + encoded });
-  } catch (err) {
     console.error("Erreur Wave:", err.response ? JSON.stringify(err.response.data) : err.message);
     res.status(500).json({ success: false, error: "Erreur paiement Wave" });
   }
@@ -67,17 +91,41 @@ app.post("/pay/orange-money", async (req, res) => {
   const { phone, name, email, amount, order_id } = req.body;
   console.log("OM body:", JSON.stringify(req.body));
   try {
-    const r = await axios.post(
-      "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
-      { orange_money_senegal_fullName: name, orange_money_senegal_email: email, orange_money_senegal_phone: phone, orange_money_senegal_payment_token: order_id, orange_money_senegal_amount: amount },
+    // Étape 1 : Créer la facture
+    const facture = await axios.post(
+      "https://app.paydunya.com/api/v1/checkout-invoice/create",
+      {
+        invoice: { total_amount: amount, description: "Commande Shopify #" + order_id },
+        store: { name: "Ma Boutique Shopify" },
+        custom_data: { shopify_order_id: order_id },
+        actions: {
+          cancel_url: "https://" + SHOPIFY_STORE,
+          return_url: "https://" + SHOPIFY_STORE,
+          callback_url: SERVER_URL + "/paydunya-webhook"
+        }
+      },
       { headers: pdHeaders }
     );
-    console.log("OM response:", JSON.stringify(r.data));
+    console.log("Facture créée:", JSON.stringify(facture.data));
+    const invoice_token = facture.data.token;
+
+    // Étape 2 : Appeler SoftPay Wave avec le token
+    const r = await axios.post(
+      "https://app.paydunya.com/api/v1/softpay/wave-senegal",
+      {
+        wave_senegal_fullName:      name,
+        wave_senegal_email:         email,
+        wave_senegal_phone:         phone,
+        wave_senegal_payment_token: invoice_token,
+        wave_senegal_amount:        amount
+      },
+      { headers: pdHeaders }
+    );
+    console.log("Wave response:", JSON.stringify(r.data));
     const url = r.data.url || r.data.link || r.data.payment_url;
     if (!url) return res.status(500).json({ success: false, error: "URL non trouvée", data: r.data });
     const encoded = Buffer.from(url).toString("base64");
-    res.json({ success: true, lien: SERVER_URL + "/orange-money/" + encoded });
-  } catch (err) {
+    res.json({ success: true, lien: SERVER_URL + "/wave/" + encoded });
     console.error("Erreur OM:", err.response ? JSON.stringify(err.response.data) : err.message);
     res.status(500).json({ success: false, error: "Erreur paiement Orange Money" });
   }
