@@ -95,14 +95,16 @@ app.post("/pay/orange-money", async (req, res) => {
   try {
     const invoice_token = await creerFacture(amount, order_id);
     const r = await axios.post(
-      "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
-      {
-        orange_money_senegal_fullName:      name,
-        orange_money_senegal_email:         email,
-        orange_money_senegal_phone:         phone,
-        orange_money_senegal_payment_token: invoice_token,
-        orange_money_senegal_amount:        parseInt(amount)
-      },
+  "https://app.paydunya.com/api/v1/softpay/orange-money-senegal",
+  {
+    "fullname":      name,
+    "email":         email,
+    "phone":         phone,
+    "payment_token": invoice_token,
+    "amount":        parseInt(amount)
+  },
+  { headers: pdHeaders }
+);
       { headers: pdHeaders }
     );
     console.log("OM response:", JSON.stringify(r.data));
