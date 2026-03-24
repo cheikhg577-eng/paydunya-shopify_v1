@@ -11,13 +11,11 @@ app.use((req, res, next) => {
   next();
 });
 
-const PAYDUNYA_MASTER_KEY  = "zSI0Bxkh-IJEk-d0Ik-ERUf-fJYa52ZoIelK";
-const PAYDUNYA_PRIVATE_KEY = "live_private_lkHkajCBRtLSh74jz9pWNlJIk9e";
-const PAYDUNYA_TOKEN       = "DJO07inVXHdP0qpwR5KZ";
-const SERVER_URL           = "https://paydunya-shopifyv1-production.up.railway.app";
-const SHOPIFY_STORE        = "bc-shop-9080.myshopify.com";
-const SHOPIFY_CLIENT_ID    = "5d1ee38278cf3341b0f13bd51044c099";
-const SHOPIFY_SECRET       = "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";
+const PAYDUNYA_MASTER_KEY  = process.env.PAYDUNYA_MASTER_KEY;
+const PAYDUNYA_PRIVATE_KEY = process.env.PAYDUNYA_PRIVATE_KEY;
+const PAYDUNYA_TOKEN       = process.env.PAYDUNYA_TOKEN;
+const SHOPIFY_CLIENT_ID    = process.env.SHOPIFY_CLIENT_ID;
+const SHOPIFY_SECRET       = process.env.SHOPIFY_SECRET;
 const pdHeaders = {
   "Content-Type":         "application/json",
   "PAYDUNYA-MASTER-KEY":  PAYDUNYA_MASTER_KEY,
